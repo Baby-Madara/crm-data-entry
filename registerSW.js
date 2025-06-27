@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/crm-data-entry/sw.js', { scope: '/crm-data-entry/' })})}
