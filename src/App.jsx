@@ -1101,7 +1101,7 @@ export default function App() {
                                                         );
                                                     }
                                             return (
-                                                <td key={column} className="px-0.5 py-0 text-[11px] whitespace-nowrap overflow-hidden text-ellipsis border-r border-b border-gray-300"
+                                                <td key={column} className="px-0.5 py-0 text-[11px] whitespace-nowrap overflow-hidden text-ellipsis border-r border-gray-300 border-b border-gray-300"
                                                     style={column === 'country' && newRow.country ? { backgroundColor: countryColors[newRow.country] || '#F3F4F6' } : {}}>
                                                     {cell}
                                                 </td>
@@ -1319,7 +1319,7 @@ export default function App() {
                                                             );
                                                         }
                                                 return (
-                                                    <td key={column} className="px-0.5 py-0 text-[11px] whitespace-nowrap overflow-hidden text-ellipsis border-r border-gray-300 border-b"
+                                                    <td key={column} className="px-0.5 py-0 text-[11px] whitespace-nowrap overflow-hidden text-ellipsis border-r border-gray-300 border-b border-gray-300"
                                                         style={column === 'country' && item.country ? { backgroundColor: countryColors[item.country] || '#F3F4F6' } : {}}>
                                                         {cell}
                                                     </td>
