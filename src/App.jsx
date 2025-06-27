@@ -5,7 +5,7 @@ import { Button }                      from "@/components/ui/button";
 import { Input }                       from "@/components/ui/input";
 import { Card }                        from "@/components/ui/card";
 import { Badge }                       from "@/components/ui/badge";
-import { Copy, Edit, Trash2, Eye, Plus, Search, Filter, Download, XCircle } from "lucide-react";
+import { Copy, Edit, Trash2, Eye, Plus, Search, Filter, Download, XCircle, Pencil } from "lucide-react";
 import './App.css';
 
 
@@ -19,11 +19,11 @@ const jobPositions = [
 
 
 const employees = [
-    { id: "emp1", name: "Ahmed Farahat",    phone: "+201234567890", position: "Customer Service",  employment_date: "2022-01-15", color: "#5F5FF5", rank: 1, title: "Engineer" },
-    { id: "emp2", name: "Mohamed Ahmed",    phone: "+201112223334", position: "Operation Manager", employment_date: "2021-11-01", color: "#F55F5F", rank: 2, title: "Technical Support Specialist" },
-    { id: "emp3", name: "Ahmed Ashraf",     phone: "+201555666777", position: "Sales",             employment_date: "2023-03-10", color: "#11B55F", rank: 3, title: "Engineer" },
-    { id: "emp4", name: "Yathreb Hamdi",    phone: "+201888999000", position: "Manager",           employment_date: "2020-07-20", color: "#F51111", rank: 1, title: "Sales Representative" },
-    { id: "emp5", name: "Shrouq Alaa",      phone: "+201333444555", position: "Customer Service",  employment_date: "2022-09-05", color: "#5F5FF5", rank: 2, title: "Doctor" },
+    { id: "emp1", name: "Ahmed Farahat",    phone: "+201234567890", position: "Customer Service",  employment_date: "2022-01-15", color: "#5F5FF5", rank: 1, title: "Engineer"                      , titleShort: "Eng."    },
+    { id: "emp2", name: "Mohamed Ahmed",    phone: "+201112223334", position: "Operation Manager", employment_date: "2021-11-01", color: "#F55F5F", rank: 2, title: "Technical Support Specialist"  , titleShort: "Eng."    },
+    { id: "emp3", name: "Ahmed Ashraf",     phone: "+201555666777", position: "Sales",             employment_date: "2023-03-10", color: "#11B55F", rank: 3, title: "Engineer"                      , titleShort: "Eng."    },
+    { id: "emp4", name: "Yathreb Hamdi",    phone: "+201888999000", position: "Manager",           employment_date: "2020-07-20", color: "#F51111", rank: 1, title: "Sales Representative"          , titleShort: "Dr."     },
+    { id: "emp5", name: "Shrouq Alaa",      phone: "+201333444555", position: "Customer Service",  employment_date: "2022-09-05", color: "#5F5FF5", rank: 2, title: "Doctor"                        , titleShort: "Dr."     },
 ];
 
 const statusOptions = [
@@ -204,6 +204,94 @@ const initialEventRow = {
     customerNotes: ""
 };
 
+function InstallPWAButton() {
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    useEffect(() => {
+        const handler = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handler);
+        return () => window.removeEventListener('beforeinstallprompt', handler);
+    }, []);
+    if (!deferredPrompt) return null;
+    return (
+        <button
+            onClick={() => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => setDeferredPrompt(null));
+            }}
+            className="ml-2 px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+        >
+            Install App
+        </button>
+    );
+}
+
+// Replace AgentCell with this version above the main App function:
+function AgentCell({ value, onChange, dropdownOpen, onEdit, onDropdownClose, agents }) {
+    const buttonRef = useRef();
+    const empData = name => employees.find(e => e.name === name);
+    return (
+        <div className="relative flex items-center">
+            <div className="max-w-[110px] overflow-x-auto whitespace-nowrap flex gap-1 items-center">
+                {value.length === 0 ? (
+                    <span className="text-gray-400 text-xs">Select agent(s)</span>
+                ) : (
+                    value.map(agentName => {
+                        const emp = empData(agentName);
+                        return (
+                            <span key={agentName} className="inline-flex items-center gap-1 px-1 py-0.5 rounded text-xs" style={{ backgroundColor: emp?.color + '20', color: emp?.color, border: `1px solid ${emp?.color}40` }}>
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: emp?.color }}></div>
+                                {agentName}
+                            </span>
+                        );
+                    })
+                )}
+            </div>
+            <button
+                type="button"
+                ref={buttonRef}
+                className="ml-1 p-0.5 rounded hover:bg-gray-100 focus:bg-gray-200"
+                onClick={onEdit}
+                tabIndex={0}
+                aria-label="Edit agents"
+            >
+                <Pencil className="w-3 h-3 text-gray-500" />
+            </button>
+            {dropdownOpen && (
+                <PortalDropdown anchorRef={buttonRef} open={dropdownOpen} onClose={onDropdownClose} width={180}>
+                    <div className="z-30 bg-white border rounded-xl shadow-lg w-full max-h-40 overflow-y-auto mt-1 text-xs">
+                        {agents.map(opt => {
+                            const emp = employees.find(e => e.name === opt);
+                            return (
+                                <label key={opt} className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-blue-50 focus-within:bg-blue-100 rounded-lg transition-colors whitespace-normal break-words max-w-full border-b border-gray-100 last:border-b-0">
+                                    <input
+                                        type="checkbox"
+                                        checked={value.includes(opt)}
+                                        onChange={() => {
+                                            if (value.includes(opt)) {
+                                                onChange(value.filter(a => a !== opt));
+                                            } else {
+                                                onChange([...value, opt]);
+                                            }
+                                        }}
+                                        className="mr-2 accent-blue-500 w-4 h-4"
+                                    />
+                                    <div className="flex items-center gap-2">
+                                        {emp?.color && <div className="w-3 h-3 rounded-full" style={{ backgroundColor: emp?.color }}></div>}
+                                        <span>{opt}</span>
+                                    </div>
+                                </label>
+                            );
+                        })}
+                    </div>
+                </PortalDropdown>
+            )}
+        </div>
+    );
+}
+
 export default function App() {
     const [items,             setItems             ] = useState([]);
     const [filter,            setFilter            ] = useState("");
@@ -309,8 +397,8 @@ export default function App() {
     // Move useRef and focusCell here
     const inputRefs = useRef({});
     const focusCell = (rowKey, colKey) => {
-      const ref = inputRefs.current[`${rowKey}-${colKey}`];
-      if (ref) ref.focus();
+        const ref = inputRefs.current[`${rowKey}-${colKey}`];
+        if (ref) ref.focus();
     };
 
     useEffect(() => {
@@ -482,8 +570,8 @@ export default function App() {
         const isDragOver = dragOverColumn === column;
         
         const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-        
-        return (
+
+    return (
             <th 
                 style={{width: colWidths[column]}} 
                 className={`px-1 py-0.5 text-[11px] font-medium text-gray-700 uppercase tracking-wider border-r border-gray-400 bg-gray-100 relative cursor-move ${
@@ -617,6 +705,11 @@ export default function App() {
         editItem(id, 'orderVal', filtered);
     };
 
+    // At the top level of App component:
+    const [editingAgentsRow, setEditingAgentsRow] = useState(null); // null, 'new', or row id
+    const [popoverPos, setPopoverPos] = useState(null);
+    const pencilRefs = useRef({});
+
     return (
         <div className="min-h-screen bg-gray-50 p-2">
             <div className="max-w-full mx-auto space-y-3">
@@ -632,100 +725,104 @@ export default function App() {
                                 <Download className="w-4 h-4 mr-2" />
                                 Export
                             </Button>
+                            <InstallPWAButton />
                         </div>
                     </div>
                 </div>
 
                 {/* Stats */}
-                <div className="flex flex-wrap gap-2 justify-between items-center mb-1">
-                    <div className="flex gap-1 flex-wrap w-full sm:w-auto">
-                        <Card className="p-2 flex flex-col items-center min-w-[70px]">
-                            <div className="text-lg font-bold text-blue-600">{filteredSortedItems.length}</div>
-                            <div className="text-[10px] text-gray-500 leading-tight">Customers</div>
-                        </Card>
-                        <Card className="p-2 flex flex-col items-center min-w-[70px]">
-                            <div className="text-lg font-bold" style={{ color: getStatusData("Completed")?.color }}>
-                                {filteredSortedItems.filter(item => item.status === "Completed").length}
+                <div className="mb-1">
+                    <div className="flex flex-row gap-2 items-center justify-between w-full overflow-x-auto pb-1 px-1">
+                        {[{
+                            label: 'Customers',
+                            value: filteredSortedItems.length,
+                            color: 'text-blue-600'
+                        }, {
+                            label: 'Completed',
+                            value: filteredSortedItems.filter(item => item.status === "Completed").length,
+                            color: 'text-green-600'
+                        }, {
+                            label: 'In Progress',
+                            value: filteredSortedItems.filter(item => item.status === "In Progress").length,
+                            color: 'text-yellow-600'
+                        }, {
+                            label: 'Total Value',
+                            value: `${filteredSortedItems.reduce((sum, item) => sum + (parseFloat(item.orderVal) || 0), 0).toFixed(2)} SAR`,
+                            color: 'text-purple-600'
+                        }].map(stat => (
+                            <div key={stat.label} className="flex flex-col items-center bg-white rounded-lg shadow border border-gray-200 px-3 py-1 min-w-[80px] max-w-[100px]">
+                                <div className={`text-base font-bold leading-none ${stat.color}`}>{stat.value}</div>
+                                <div className="text-[10px] text-gray-500 leading-none mt-0.5">{stat.label}</div>
                             </div>
-                            <div className="text-[10px] text-gray-500 leading-tight">Completed</div>
-                        </Card>
-                        <Card className="p-2 flex flex-col items-center min-w-[70px]">
-                            <div className="text-lg font-bold" style={{ color: getStatusData("In Progress")?.color }}>
-                                {filteredSortedItems.filter(item => item.status === "In Progress").length}
-                            </div>
-                            <div className="text-[10px] text-gray-500 leading-tight">In Progress</div>
-                        </Card>
-                        <Card className="p-2 flex flex-col items-center min-w-[70px]">
-                            <div className="text-lg font-bold text-purple-600">{filteredSortedItems.reduce((sum, item) => sum + (parseFloat(item.orderVal) || 0), 0).toFixed(2)} SAR</div>
-                            <div className="text-[10px] text-gray-500 leading-tight">Total Value</div>
-                        </Card>
+                        ))}
                     </div>
                 </div>
 
                 {/* Filters */}
-                <div className="bg-white rounded-lg shadow-sm p-1">
-                    <div className="flex flex-nowrap gap-0.5 overflow-x-auto md:overflow-visible md:flex-wrap items-center text-[11px]">
-                        <div className="min-w-[60px] flex-1">
-                            <div className="relative">
+                <div className="bg-white rounded-lg shadow-sm p-2">
+                    <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2 mb-1">
+                            <div className="relative w-full max-w-[180px]">
                                 <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
                                 <Input 
                                     placeholder="Search..." 
                                     value={filter} 
                                     onChange={(e) => setFilter(e.target.value)}
-                                    className="pl-7 py-0.5 text-xs h-6 min-w-[100px]"
+                                    className="pl-7 py-0.5 text-xs h-8 w-full min-w-[120px]"
                                 />
                             </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="px-2 py-1 h-8 text-xs flex items-center gap-1 border-red-200 text-red-600 hover:bg-red-50"
+                                onClick={() => {
+                                    setFilter("");
+                                    setStatusMultiFilter([]);
+                                    setPaymentFilter([]);
+                                    setAgentFilter([]);
+                                    setDateRange({ from: '', to: '' });
+                                }}
+                                title="Clear all filters"
+                            >
+                                <XCircle className="w-4 h-4 mr-1" />
+                                Clear
+                            </Button>
                         </div>
-                        <div className="min-w-fit w-auto">
-                            <MultiSelectDropdown
-                                value={statusMultiFilter}
-                                onChange={setStatusMultiFilter}
-                                options={statusOptions.map(s => s.value)}
-                                getOptionData={opt => statusOptions.find(s => s.value === opt)}
-                                placeholder="Status"
-                            />
+                        <div className="flex gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pb-1 px-1" style={{ WebkitOverflowScrolling: 'touch' }}>
+                            <div className="min-w-fit w-auto">
+                                <MultiSelectDropdown
+                                    value={statusMultiFilter}
+                                    onChange={setStatusMultiFilter}
+                                    options={statusOptions.map(s => s.value)}
+                                    getOptionData={opt => statusOptions.find(s => s.value === opt)}
+                                    placeholder="Status"
+                                />
+                            </div>
+                            <div className="min-w-fit w-auto">
+                                <MultiSelectDropdown
+                                    value={paymentFilter}
+                                    onChange={setPaymentFilter}
+                                    options={paymentMethods.map(p => p.value)}
+                                    getOptionData={opt => paymentMethods.find(p => p.value === opt)}
+                                    placeholder="Payment"
+                                />
+                            </div>
+                            <div className="min-w-fit w-auto">
+                                <MultiSelectDropdown
+                                    value={agentFilter}
+                                    onChange={setAgentFilter}
+                                    options={agents}
+                                    getOptionData={opt => getEmployeeData(opt)}
+                                    placeholder="Select agent(s)"
+                                />
+                            </div>
+                            <div className="flex gap-1 items-center text-xs min-w-[220px]">
+                                <span>From</span>
+                                <input type="datetime-local" value={dateRange.from} onChange={e => setDateRange(r => ({ ...r, from: e.target.value }))} className="border rounded px-1 py-0.5 h-7 text-xs" />
+                                <span>To</span>
+                                <input type="datetime-local" value={dateRange.to} onChange={e => setDateRange(r => ({ ...r, to: e.target.value }))} className="border rounded px-1 py-0.5 h-7 text-xs" />
+                            </div>
                         </div>
-                        <div className="min-w-fit w-auto">
-                            <MultiSelectDropdown
-                                value={paymentFilter}
-                                onChange={setPaymentFilter}
-                                options={paymentMethods.map(p => p.value)}
-                                getOptionData={opt => paymentMethods.find(p => p.value === opt)}
-                                placeholder="Payment"
-                            />
-                        </div>
-                        <div className="min-w-fit w-auto">
-                            <MultiSelectDropdown
-                                value={agentFilter}
-                                onChange={setAgentFilter}
-                                options={agents}
-                                getOptionData={opt => getEmployeeData(opt)}
-                                placeholder="Select agent(s)"
-                            />
-                        </div>
-                        <div className="flex gap-1 items-center text-xs min-w-[220px]">
-                            <span>From</span>
-                            <input type="datetime-local" value={dateRange.from} onChange={e => setDateRange(r => ({ ...r, from: e.target.value }))} className="border rounded px-1 py-0.5 h-6 text-xs" />
-                            <span>To</span>
-                            <input type="datetime-local" value={dateRange.to} onChange={e => setDateRange(r => ({ ...r, to: e.target.value }))} className="border rounded px-1 py-0.5 h-6 text-xs" />
-                        </div>
-                        <div className="flex-1" />
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="ml-2 px-2 py-1 h-8 text-xs flex items-center gap-1 border-red-200 text-red-600 hover:bg-red-50"
-                            onClick={() => {
-                                setFilter("");
-                                setStatusMultiFilter([]);
-                                setPaymentFilter([]);
-                                setAgentFilter([]);
-                                setDateRange({ from: '', to: '' });
-                            }}
-                            title="Clear all filters"
-                        >
-                            <XCircle className="w-4 h-4 mr-1" />
-                            Clear Filters
-                        </Button>
                     </div>
                 </div>
 
@@ -828,9 +925,9 @@ export default function App() {
                                                 }
                                             } else if (column === 'country') {
                                                 cell = (
-                                                    <select
+                                <select 
                                                         ref={el => inputRefs.current[`new-${column}`] = el}
-                                                        value={newRow.country}
+                                    value={newRow.country} 
                                                         onChange={e => setNewRow({ ...newRow, country: e.target.value })}
                                                         onKeyDown={e => {
                                                             if (e.key === 'Escape') e.target.blur();
@@ -841,12 +938,12 @@ export default function App() {
                                                             }
                                                         }}
                                                         className="w-full px-1 py-0 h-5 text-[11px] border rounded"
-                                                    >
-                                                        <option value="">Select country</option>
-                                                        {countries.map(country => (
-                                                            <option key={country} value={country}>{country}</option>
-                                                        ))}
-                                                    </select>
+                                >
+                                    <option value="">Select country</option>
+                                    {countries.map(country => (
+                                        <option key={country} value={country}>{country}</option>
+                                    ))}
+                                </select>
                                                 );
                                             } else if (column === 'status') {
                                                 cell = (
@@ -870,20 +967,23 @@ export default function App() {
                                                     </select>
                                                 );
                                             } else if (column === 'crmAgents') {
+                                                // look carefuully at this
                                                 cell = (
-                                                    <MultiSelectDropdown
+                                                    <AgentCell
                                                         value={newRow.crmAgents}
-                                                        onChange={crmAgents => setNewRow({ ...newRow, crmAgents })}
-                                                        options={agents}
-                                                        getOptionData={opt => getEmployeeData(opt)}
-                                                        placeholder="Select CRM Agents"
+                                                        onChange={agents => setNewRow({ ...newRow, crmAgents: agents })}
+                                                        isEditing={editingAgentsRow === 'new'}
+                                                        onEdit={() => setEditingAgentsRow('new')}
+                                                        dropdownOpen={editingAgentsRow === 'new'}
+                                                        onDropdownClose={() => setEditingAgentsRow(null)}
+                                                        agents={agents}
                                                     />
                                                 );
                                             } else if (column === 'paymentType') {
                                                 const paymentData = getPaymentData(newRow.paymentType);
                                                 cell = (
                                                     <div className="flex items-center gap-1">
-                                                        <select
+                                <select 
                                                             ref={el => inputRefs.current[`new-${column}`] = el}
                                                             value={newRow.paymentType}
                                                             onChange={e => setNewRow({ ...newRow, paymentType: e.target.value })}
@@ -903,9 +1003,9 @@ export default function App() {
                                                                 <option key={opt.value} value={opt.value}>
                                                                     {opt.icon} {opt.label}
                                                                 </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
+                                    ))}
+                                </select>
+                            </div>
                                                 );
                                             } else if (column === 'delivered') {
                                                 cell = (
@@ -944,7 +1044,7 @@ export default function App() {
                                                         'address', 'chatLink'
                                                     ].includes(column)) {
                                                         cell = (
-                                                            <Input
+                                <Input 
                                                                 type={column === 'chatLink' ? 'url' : 'text'}
                                                                 ref={el => inputRefs.current[`new-${column}`] = el}
                                                                 value={newRow[field] || ''}
@@ -982,7 +1082,7 @@ export default function App() {
                                                         );
                                                     } else if (column === 'orderVal') {
                                                         cell = (
-                                                            <Input
+                                <Input 
                                                                 ref={el => inputRefs.current[`new-orderVal`] = el}
                                                                 value={newRow.orderVal || ''}
                                                                 onChange={e => handleOrderValChange(e.target.value)}
@@ -1035,7 +1135,7 @@ export default function App() {
                                                 ].includes(column)) {
                                                     if (column === 'phoneNum') {
                                                         cell = (
-                                                            <Input
+                                <Input 
                                                                 ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
                                                                 value={item.phoneNum || ''}
                                                                 onChange={e => handleEditPhoneChange(item.id, e.target.value)}
@@ -1049,7 +1149,7 @@ export default function App() {
                                                         );
                                                     } else {
                                                         cell = (
-                                                            <Input
+                                <Input 
                                                                 ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
                                                                 value={item[field] || ''}
                                                                 onChange={e => editItem(item.id, field, e.target.value)}
@@ -1064,7 +1164,7 @@ export default function App() {
                                                     }
                                                 } else if (column === 'country') {
                                                     cell = (
-                                                        <select
+                            <select 
                                                             ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
                                                             value={item.country}
                                                             onChange={e => editItem(item.id, 'country', e.target.value)}
@@ -1078,8 +1178,8 @@ export default function App() {
                                                             <option value="">Select country</option>
                                                             {countries.map(country => (
                                                                 <option key={country} value={country}>{country}</option>
-                                                            ))}
-                                                        </select>
+                                ))}
+                            </select>
                                                     );
                                                 } else if (column === 'status') {
                                                     cell = (
@@ -1101,12 +1201,14 @@ export default function App() {
                                                     );
                                                 } else if (column === 'crmAgents') {
                                                     cell = (
-                                                        <MultiSelectDropdown
+                                                        <AgentCell
                                                             value={item.crmAgents}
-                                                            onChange={crmAgents => editItem(item.id, 'crmAgents', crmAgents)}
-                                                            options={agents}
-                                                            getOptionData={opt => getEmployeeData(opt)}
-                                                            placeholder="Select CRM Agents"
+                                                            onChange={agents => editItem(item.id, 'crmAgents', agents)}
+                                                            isEditing={editingAgentsRow === item.id}
+                                                            onEdit={() => setEditingAgentsRow(item.id)}
+                                                            dropdownOpen={editingAgentsRow === item.id}
+                                                            onDropdownClose={() => setEditingAgentsRow(null)}
+                                                            agents={agents}
                                                         />
                                                     );
                                                 } else if (column === 'paymentType') {
@@ -1132,7 +1234,7 @@ export default function App() {
                                                                     </option>
                                                                 ))}
                                                             </select>
-                                                        </div>
+                                                </div>
                                                     );
                                                 } else if (column === 'delivered') {
                                                     cell = (
@@ -1240,8 +1342,24 @@ export default function App() {
 
                 {/* Customer Details Modal */}
                 {selectedCustomer && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+                        onClick={e => {
+                            if (e.target === e.currentTarget) setSelectedCustomer(null);
+                        }}
+                        tabIndex={-1}
+                        onKeyDown={e => {
+                            if (e.key === 'Escape') setSelectedCustomer(null);
+                        }}
+                    >
+                        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+                            <button
+                                className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-xl font-bold z-10"
+                                onClick={() => setSelectedCustomer(null)}
+                                aria-label="Close"
+                            >
+                                ×
+                            </button>
                             <div className="p-6">
                                 <h2 className="text-xl font-semibold mb-4">Customer Details - {selectedCustomer.clientName}</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1285,39 +1403,22 @@ export default function App() {
                                     </div>
                                     <div className="md:col-span-2">
                                         <label className="text-sm font-medium text-gray-500">CRM Agents</label>
-                                        <div className="flex flex-wrap gap-1 mt-1">
+                                        <div className="max-w-[110px] overflow-x-auto whitespace-nowrap flex gap-1 items-center">
                                             {selectedCustomer.crmAgents.map(agentName => {
                                                 const emp = getEmployeeData(agentName);
                                                 return (
-                                                    <div key={agentName} className="inline-flex items-center gap-2 px-2 py-1 rounded text-xs" 
-                                                         style={{ backgroundColor: emp?.color + '20', color: emp?.color, border: `1px solid ${emp?.color}40` }}>
+                                                    <div key={agentName} className="inline-flex items-center gap-2 px-2 py-1 rounded text-xs"
+                                                        style={{ backgroundColor: emp?.color + '20', color: emp?.color, border: `1px solid ${emp?.color}40` }}>
                                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: emp?.color }}></div>
                                                         <div>
                                                             <div className="font-medium">{agentName}</div>
                                                             <div className="text-xs opacity-75">{emp?.title}</div>
-                                                        </div>
-                                                    </div>
+                                        </div>
+                                    </div>
                                                 );
                                             })}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="text-sm font-medium text-gray-500">Payment Method</label>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            {selectedCustomer.paymentType ? (
-                                                <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs" 
-                                                     style={{ backgroundColor: getPaymentData(selectedCustomer.paymentType)?.color + '20', color: getPaymentData(selectedCustomer.paymentType)?.color, border: `1px solid ${getPaymentData(selectedCustomer.paymentType)?.color}40` }}>
-                                                    <span>{getPaymentData(selectedCustomer.paymentType)?.icon}</span>
-                                                    <span>{getPaymentData(selectedCustomer.paymentType)?.label}</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-sm text-gray-500">Not specified</span>
-                                            )}
-                                        </div>
-                                    </div>
                                 </div>
-                                <div className="flex justify-end mt-6">
-                                    <Button onClick={() => setSelectedCustomer(null)}>Close</Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1327,4 +1428,3 @@ export default function App() {
         </div>
     );
 }
-
