@@ -5,7 +5,7 @@ import { Button }                      from "@/components/ui/button";
 import { Input }                       from "@/components/ui/input";
 import { Card }                        from "@/components/ui/card";
 import { Badge }                       from "@/components/ui/badge";
-import { Copy, Edit, Trash2, Eye, Plus, Search, Filter, Download } from "lucide-react";
+import { Copy, Edit, Trash2, Eye, Plus, Search, Filter, Download, XCircle } from "lucide-react";
 import './App.css';
 
 
@@ -19,11 +19,11 @@ const jobPositions = [
 
 
 const employees = [
-    { id: "emp4", name: "Yathreb Hamdi", phone: "+201888999000", position: "Manager",           employment_date: "", color: "#F51111", rank: 1, title: "Sales Representative" },
-    { id: "emp2", name: "Mohamed Ahmed", phone: "+201112223334", position: "Operation Manager", employment_date: "", color: "#F55F5F", rank: 2, title: "Technical Support Specialist" },
-    { id: "emp3", name: "Ahmed Ashraf",  phone: "+201555666777", position: "Sales",             employment_date: "", color: "#11B55F", rank: 3, title: "Engineer" },
-    { id: "emp1", name: "Ahmed Farahat", phone: "+201234567890", position: "Customer Service",  employment_date: "", color: "#5F5FF5", rank: 1, title: "Engineer" },
-    { id: "emp5", name: "Shrouq Alaa",   phone: "+201333444555", position: "Customer Service",  employment_date: "", color: "#5F5FF5", rank: 2, title: "Doctor" },
+    { id: "emp1", name: "Ahmed Farahat",    phone: "+201234567890", position: "Customer Service",  employment_date: "2022-01-15", color: "#5F5FF5", rank: 1, title: "Engineer" },
+    { id: "emp2", name: "Mohamed Ahmed",    phone: "+201112223334", position: "Operation Manager", employment_date: "2021-11-01", color: "#F55F5F", rank: 2, title: "Technical Support Specialist" },
+    { id: "emp3", name: "Ahmed Ashraf",     phone: "+201555666777", position: "Sales",             employment_date: "2023-03-10", color: "#11B55F", rank: 3, title: "Engineer" },
+    { id: "emp4", name: "Yathreb Hamdi",    phone: "+201888999000", position: "Manager",           employment_date: "2020-07-20", color: "#F51111", rank: 1, title: "Sales Representative" },
+    { id: "emp5", name: "Shrouq Alaa",      phone: "+201333444555", position: "Customer Service",  employment_date: "2022-09-05", color: "#5F5FF5", rank: 2, title: "Doctor" },
 ];
 
 const statusOptions = [
@@ -42,12 +42,11 @@ const paymentMethods = [
     { value: "Check",          label: "Check",          color: "#EF4444", icon: "📄" },
 ];
 
-const countries = ["Saudi Arabia", "Egypt", "UAE", "Jordan", "Lebanon", "Kuwait", "Qatar"];
-
-// 1. Add a unique color for the add-row
-const ADD_ROW_COLOR = '#e0e7ef';
-
-// 3. Country color map
+const countries = [
+    "Saudi Arabia", "Egypt", "UAE", "Jordan", "Lebanon", "Kuwait", "Qatar", "Bahrain", "Oman", "Morocco", "Algeria", "Tunisia", "Libya", "Sudan", "Palestine", "Syria", "Iraq", "Yemen", "Comoros", "Mauritania",
+    "United States", "United Kingdom", "France", "Germany", "India", "China", "Japan", "Brazil", "Canada", "Australia", "Russia", "Italy", "Spain", "Turkey", "South Africa", "Mexico", "Indonesia", "Pakistan", "Bangladesh", "Nigeria", "Argentina", "Philippines", "Vietnam", "Thailand", "Malaysia", "Singapore", "South Korea", "Sweden", "Norway", "Finland", "Denmark", "Netherlands", "Belgium", "Switzerland", "Austria", "Greece", "Portugal", "Poland", "Czech Republic", "Hungary", "Romania", "Bulgaria", "Slovakia", "Slovenia", "Croatia", "Serbia", "Ukraine", "Belarus", "Estonia", "Latvia", "Lithuania", "Georgia", "Armenia", "Azerbaijan", "Kazakhstan", "Uzbekistan", "Turkmenistan", "Kyrgyzstan", "Tajikistan", "Afghanistan", "Nepal", "Sri Lanka", "Maldives", "Bhutan", "Mongolia", "Cambodia", "Laos", "Myanmar", "New Zealand", "Chile", "Colombia", "Peru", "Venezuela", "Ecuador", "Bolivia", "Paraguay", "Uruguay", "Costa Rica", "Panama", "Guatemala", "Honduras", "El Salvador", "Nicaragua", "Cuba", "Dominican Republic", "Haiti", "Jamaica", "Trinidad and Tobago", "Barbados", "Bahamas", "Iceland", "Ireland", "Luxembourg", "Liechtenstein", "Monaco", "San Marino", "Andorra", "Malta", "Cyprus", "Israel", "Iran", "North Korea", "Macedonia", "Montenegro", "Bosnia and Herzegovina", "Albania", "Moldova", "Gabon", "Gambia", "Ghana", "Guinea", "Guinea-Bissau", "Ivory Coast", "Kenya", "Lesotho", "Liberia", "Madagascar", "Malawi", "Mali", "Mauritius", "Mozambique", "Namibia", "Niger", "Rwanda", "Senegal", "Seychelles", "Sierra Leone", "Somalia", "South Sudan", "Swaziland", "Tanzania", "Togo", "Uganda", "Zambia", "Zimbabwe"
+];
+const arabCountries = ["Saudi Arabia", "Egypt", "UAE", "Jordan", "Lebanon", "Kuwait", "Qatar", "Bahrain", "Oman", "Morocco", "Algeria", "Tunisia", "Libya", "Sudan", "Palestine", "Syria", "Iraq", "Yemen", "Comoros", "Mauritania"];
 const countryColors = {
     'Saudi Arabia':  '#A7F3D0',
     'Egypt':         '#FDE68A',
@@ -56,19 +55,42 @@ const countryColors = {
     'Lebanon':       '#DDD6FE',
     'Kuwait':        '#FBCFE8',
     'Qatar':         '#FDE68A',
+    'Bahrain':       '#FDE68A',
+    'Oman':          '#FDE68A',
+    'Morocco':       '#FDE68A',
+    'Algeria':       '#FDE68A',
+    'Tunisia':       '#FDE68A',
+    'Libya':         '#FDE68A',
+    'Sudan':         '#FDE68A',
+    'Palestine':     '#FDE68A',
+    'Syria':         '#FDE68A',
+    'Iraq':          '#FDE68A',
+    'Yemen':         '#FDE68A',
+    'Comoros':       '#FDE68A',
+    'Mauritania':    '#FDE68A',
 };
 
+// 1. Add a unique color for the add-row
+const ADD_ROW_COLOR = '#e0e7ef';
+
 // PortalDropdown: renders children in a portal, positioned relative to a target element
-function PortalDropdown({ anchorRef, open, onClose, children, width = 200 }) {
+function PortalDropdown({ anchorRef, open, onClose, children, width = 220 }) {
     const [pos, setPos] = useState(null);
     const menuRef = useRef();
     useEffect(() => {
         if (open && anchorRef?.current) {
             const rect = anchorRef.current.getBoundingClientRect();
-            setPos({
+            const isMobile = window.innerWidth < 640;
+            setPos(isMobile ? {
                 top: rect.bottom + window.scrollY,
                 left: rect.left + window.scrollX,
-                width: rect.width || width,
+                width: rect.width,
+                mobile: true
+            } : {
+                top: rect.bottom + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width > 220 ? rect.width : 220,
+                mobile: false
             });
         }
     }, [open, anchorRef, width]);
@@ -86,6 +108,42 @@ function PortalDropdown({ anchorRef, open, onClose, children, width = 200 }) {
         return () => document.removeEventListener("mousedown", handler);
     }, [open, anchorRef, onClose]);
     if (!open || !pos) return null;
+    if (pos.mobile) {
+        // Mobile: wide (90vw or min 320px), not full screen, not covering the whole window
+        // Position below button, centered if possible, no overlay
+        const vw = Math.max(window.innerWidth, document.documentElement.clientWidth);
+        const dropdownWidth = Math.max(Math.min(0.9 * vw, 400), 320); // 90vw, min 320px, max 400px
+        let left = pos.left;
+        // Center if dropdown would overflow right edge
+        if (left + dropdownWidth > vw) {
+            left = vw - dropdownWidth - 8; // 8px margin from edge
+        }
+        if (left < 8) left = 8;
+        return createPortal(
+            <div
+                ref={menuRef}
+                style={{
+                    position: "absolute",
+                    top: pos.top,
+                    left,
+                    minWidth: dropdownWidth,
+                    width: dropdownWidth,
+                    zIndex: 1050,
+                    maxWidth: '98vw',
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 8px 32px 0 rgba(31, 41, 55, 0.18)',
+                    padding: '0.25rem',
+                    background: 'white',
+                    border: '1px solid #e5e7eb',
+                }}
+                className="filter-dropdown-mobile-ui"
+            >
+                {children}
+            </div>,
+            document.body
+        );
+    }
+    // Desktop: wide, rounded, shadowed
     return createPortal(
         <div
             ref={menuRef}
@@ -94,8 +152,18 @@ function PortalDropdown({ anchorRef, open, onClose, children, width = 200 }) {
                 top: pos.top,
                 left: pos.left,
                 minWidth: pos.width,
-                zIndex: 1000,
+                width: pos.width,
+                zIndex: 1050,
+                maxWidth: 400,
+                maxHeight: '60vh',
+                overflowY: 'auto',
+                boxShadow: '0 8px 32px 0 rgba(31, 41, 55, 0.18)',
+                borderRadius: '1rem',
+                padding: '0.5rem',
+                background: 'white',
+                border: '1px solid #e5e7eb',
             }}
+            className="filter-dropdown-desktop-ui"
         >
             {children}
         </div>,
@@ -109,60 +177,66 @@ function getLocalDateTimeString(date = new Date()) {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+
+// row: [action | eventNum | ClientName | phoneNum | address | city | country | mapsLocation | status | orderNum | order | orderVal | paymentType | deliveryRepresentative | CRMAgent | startTime | deliveryTime | delivered | chatLink | crmAgentNotes | deliveryRepNotes | customerNotes ]
+
+const initialEventRow = {
+    eventNum: null,
+    clientName: "",
+    phoneNum: "",
+    address: "",
+    city: "",
+    country: "Saudi Arabia",
+    mapsLocation: "",
+    status: "New",
+    orderNum: "",
+    order: "",
+    orderVal: "",
+    paymentType: "",
+    deliveryRepresentative: "",
+    crmAgents: [],
+    startTime: getLocalDateTimeString(),
+    deliveryTime: "",
+    delivered: false,
+    chatLink: "",
+    crmAgentNotes: "",
+    deliveryRepNotes: "",
+    customerNotes: ""
+};
+
 export default function App() {
     const [items,             setItems             ] = useState([]);
     const [filter,            setFilter            ] = useState("");
     const [statusFilter,      setStatusFilter      ] = useState("");
     const [selectedCustomer,  setSelectedCustomer  ] = useState(null);
-    const [newRow,            setNewRow            ] = useState({
-        entryNumber:      null,
-        clientName:      "",
-        phoneNumber:     "",
-        city:            "",
-        country:         "Saudi Arabia",
-        location:        "",
-        mapsLocation:    "",
-        status:          "New",
-        orderNumber:     "",
-        order:           "",
-        orderValue:      "",
-        crmAgent:        [],
-        paymentMethod:   "",
-        startDate:       getLocalDateTimeString(),
-        endDate:         "",
-        completionDate:  "",
-        customerNotes:   "",
-        delivery:        false,
-        deliveryRepresentative: "",
-        crmAgentNote:    "",
-        chat:            "",
-        chatOrder:       ""
-    });
+    const [newRow,            setNewRow            ] = useState({ ...initialEventRow });
 
     const agents = employees.map((e) => e.name);
 
     // Add column widths state for resizable columns
     const defaultWidths = {
         actions: 90,
-        entry: 60,
-        client: 140,
-        contact: 120,
+        eventNum: 60,
+        clientName: 140,
+        phoneNum: 120,
+        address: 140,
         city: 90,
         country: 100,
-        location: 120,
         mapsLocation: 120,
         status: 90,
-        orderNumber: 110,
+        orderNum: 110,
         order: 110,
-        orderValue: 90,
-        payment: 100,
+        orderVal: 90,
+        paymentType: 100,
         deliveryRepresentative: 130,
-        agents: 120,
-        startDate: 120,
-        endDate: 120,
-        delivery: 80,
-        chat: 90,
-        chatOrder: 90
+        crmAgents: 140,
+        startTime: 120,
+        deliveryTime: 120,
+        delivered: 80,
+        chatLink: 90,
+        crmAgentNotes: 120,
+        deliveryRepNotes: 120,
+        customerNotes: 120
     };
     const [colWidths, setColWidths] = useState(defaultWidths);
     const resizingCol = useRef(null);
@@ -198,7 +272,7 @@ export default function App() {
     };
 
     // Sorting state
-    const [sortConfig, setSortConfig] = useState({ key: 'entryNumber', direction: 'desc' });
+    const [sortConfig, setSortConfig] = useState({ key: 'eventNum', direction: 'desc' });
     const handleSort = (key) => {
         setSortConfig((prev) => {
             if (prev.key === key) {
@@ -215,7 +289,7 @@ export default function App() {
     const sortedItems = [...items].sort((a, b) => {
         const { key, direction } = sortConfig;
         let aVal = a[key], bVal = b[key];
-        if (key === 'orderValue') {
+        if (key === 'orderVal') {
             aVal = parseFloat(aVal) || 0;
             bVal = parseFloat(bVal) || 0;
         }
@@ -248,44 +322,21 @@ export default function App() {
         localStorage.setItem("crmData", JSON.stringify(items));
     }, [items]);
 
-    // Assign entryNumber sequentially, descending
-    const getNextEntryNumber = () => {
+    // Assign eventNum sequentially, descending
+    const getNextEventNum = () => {
         if (items.length === 0) return 1;
-        return Math.max(...items.map(i => i.entryNumber || 0)) + 1;
+        return Math.max(...items.map(i => i.eventNum || 0)) + 1;
     };
 
     const addItem = () => {
         if (!newRow.clientName.trim()) return;
-        const newItem = { id: uuidv4(), ...newRow, entryNumber: getNextEntryNumber() };
+        const newItem = { id: uuidv4(), ...newRow, eventNum: getNextEventNum() };
         setItems([newItem, ...items]);
-        resetNewRow();
+        setNewRow({ ...initialEventRow });
     };
 
     const resetNewRow = () => {
-        setNewRow({
-            entryNumber:      null,
-            clientName:      "",
-            phoneNumber:     "",
-            city:            "",
-            country:         "",
-            location:        "",
-            mapsLocation:    "",
-            status:          "New",
-            order:           "",
-            orderValue:      "",
-            orderNumber:     "",
-            crmAgent:        [],
-            paymentMethod:   "",
-            startDate:       getLocalDateTimeString(),
-            endDate:         "",
-            completionDate:  "",
-            customerNotes:   "",
-            delivery:        false,
-            deliveryRepresentative: "",
-            crmAgentNote:    "",
-            chat:            "",
-            chatOrder:       ""
-        });
+        setNewRow({ ...initialEventRow });
     };
 
     const editItem = (id, field, value) => {
@@ -300,30 +351,30 @@ export default function App() {
 
     const handlePhoneChange = (val) => {
         const filtered = val.replace(/[^\d+, ]/g, "");
-        setNewRow({ ...newRow, phoneNumber: filtered });
+        setNewRow({ ...newRow, phoneNum: filtered });
     };
 
     // Handler for editing phone in existing rows
     const handleEditPhoneChange = (id, val) => {
         const filtered = val.replace(/[^\d+, ]/g, "");
-        editItem(id, 'phoneNumber', filtered);
+        editItem(id, 'phoneNum', filtered);
     };
 
     const toggleCrmAgent = (agent) => {
         setNewRow({
             ...newRow,
-            crmAgent: newRow.crmAgent.includes(agent)
-                ? newRow.crmAgent.filter((a) => a !== agent)
-                : [...newRow.crmAgent, agent]
+            crmAgents: newRow.crmAgents.includes(agent)
+                ? newRow.crmAgents.filter((a) => a !== agent)
+                : [...newRow.crmAgents, agent]
         });
     };
 
     const filteredItems = items.filter((item) => {
         const matchesSearch = item.clientName.toLowerCase().includes(filter.toLowerCase()) ||
-                            item.phoneNumber.includes(filter) ||
-                            item.location.toLowerCase().includes(filter.toLowerCase()) ||
+                            item.phoneNum.includes(filter) ||
+                            item.mapsLocation.toLowerCase().includes(filter.toLowerCase()) ||
                             item.city.toLowerCase().includes(filter.toLowerCase()) ||
-                            item.orderNumber.toLowerCase().includes(filter.toLowerCase());
+                            item.orderNum.toLowerCase().includes(filter.toLowerCase());
         
         const matchesStatus = !statusFilter || item.status === statusFilter;
         
@@ -361,7 +412,8 @@ export default function App() {
     };
 
     const handleResizeStart = (col, e) => {
-        e.stopPropagation(); // Prevent sorting when resizing
+        if (typeof window !== 'undefined' && window.innerWidth < 640) return;
+        e.stopPropagation();
         resizingCol.current = col;
         startX.current = e.clientX;
         startWidth.current = colWidths[col];
@@ -381,9 +433,9 @@ export default function App() {
 
     // Column order state
     const [columnOrder, setColumnOrder] = useState([
-        'actions', 'entry', 'client', 'contact', 'city', 'country', 'location', 'mapsLocation', 
-        'status', 'orderNumber', 'order', 'orderValue', 'payment', 'deliveryRepresentative', 'agents', 'startDate', 'endDate', 
-        'delivery', 'chat', 'chatOrder', 
+        'actions', 'eventNum', 'clientName', 'phoneNum', 'address', 'city', 'country', 'mapsLocation',
+        'status', 'orderNum', 'order', 'orderVal', 'paymentType', 'deliveryRepresentative', 'crmAgents',
+        'startTime', 'deliveryTime', 'delivered', 'chatLink', 'crmAgentNotes', 'deliveryRepNotes', 'customerNotes'
     ]);
 
     // Drag and drop state
@@ -429,10 +481,12 @@ export default function App() {
         const isDragging = draggedColumn === column;
         const isDragOver = dragOverColumn === column;
         
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+        
         return (
             <th 
                 style={{width: colWidths[column]}} 
-                className={`px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b relative cursor-move ${
+                className={`px-1 py-0.5 text-[11px] font-medium text-gray-700 uppercase tracking-wider border-r border-gray-400 bg-gray-100 relative cursor-move ${
                     isDragging ? 'opacity-50' : ''
                 } ${isDragOver ? 'border-l-2 border-blue-500' : ''}`}
                 draggable
@@ -442,41 +496,42 @@ export default function App() {
                 onDragEnd={handleDragEnd}
             >
                 <div className="flex items-center justify-between">
-                    <span onClick={() => handleSort(column === 'entry' ? 'entryNumber' : column)} className="cursor-pointer">
+                    <span onClick={() => handleSort(column === 'eventNum' ? 'eventNum' : column)} className="cursor-pointer">
                         {
-                            column === 'entry' ? '#' :
+                            column === 'eventNum' ? '#' :
                             column === 'actions' ? 'Actions' :
-                            column === 'client' ? 'Client' :
-                            column === 'contact' ? 'Contact' :
+                            column === 'clientName' ? 'Client' :
+                            column === 'phoneNum' ? 'Phone' :
                             column === 'city' ? 'City' :
                             column === 'country' ? 'Country' :
-                            column === 'location' ? 'Location' :
                             column === 'mapsLocation' ? 'Maps' :
                             column === 'status' ? 'Status' :
-                            column === 'orderNumber' ? 'Order #' :
+                            column === 'orderNum' ? 'Order #' :
                             column === 'order' ? 'Order' :
-                            column === 'orderValue' ? 'Value' :
-                            column === 'payment' ? 'Payment' :
+                            column === 'orderVal' ? 'Value' :
+                            column === 'paymentType' ? 'Payment' :
                             column === 'deliveryRepresentative' ? 'Del. Rep.' :
-                            column === 'agents' ? 'Agents' :
-                            column === 'startDate' ? 'Start' :
-                            column === 'endDate' ? 'End' :
-                            column === 'delivery' ? 'Deliv.' :
-                            column === 'chat' ? 'Chat' :
-                            column === 'chatOrder' ? 'Chat Ord.' :
+                            column === 'crmAgents' ? 'CRM Agents' :
+                            column === 'startTime' ? 'Start' :
+                            column === 'deliveryTime' ? 'Delivery Time' :
+                            column === 'delivered' ? 'Delivered' :
+                            column === 'chatLink' ? 'Chat Link' :
+                            column === 'crmAgentNotes' ? 'CRM Notes' :
+                            column === 'deliveryRepNotes' ? 'Delivery Rep. Notes' :
+                            column === 'customerNotes' ? 'Customer Notes' :
                             column
                         }
                     </span>
                     <div className="flex items-center gap-1">
                         <span className="text-gray-400 cursor-move select-none">⋮⋮</span>
-                        <span onClick={() => handleSort(column === 'entry' ? 'entryNumber' : column)} className="cursor-pointer">
-                            {getSortIndicator(column === 'entry' ? 'entryNumber' : column)}
+                        <span onClick={() => handleSort(column === 'eventNum' ? 'eventNum' : column)} className="cursor-pointer">
+                            {getSortIndicator(column === 'eventNum' ? 'eventNum' : column)}
                         </span>
                     </div>
                 </div>
                 <span 
-                    className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize bg-gray-300" 
-                    onMouseDown={(e) => handleResizeStart(column, e)}
+                    className={isMobile ? 'hidden' : 'absolute right-0 top-0 h-full w-1.5 cursor-col-resize bg-gray-300'}
+                    onMouseDown={isMobile ? undefined : (e) => handleResizeStart(column, e)}
                 />
             </th>
         );
@@ -485,67 +540,63 @@ export default function App() {
     // Filtering logic
     const filteredSortedItems = sortedItems.filter((item) => {
         const matchesSearch = item.clientName.toLowerCase().includes(filter.toLowerCase()) ||
-            item.phoneNumber.includes(filter) ||
-            (item.location || '').toLowerCase().includes(filter.toLowerCase()) ||
+            item.phoneNum.includes(filter) ||
+            (item.mapsLocation || '').toLowerCase().includes(filter.toLowerCase()) ||
             (item.city || '').toLowerCase().includes(filter.toLowerCase()) ||
-            (item.orderNumber || '').toLowerCase().includes(filter.toLowerCase());
+            (item.orderNum || '').toLowerCase().includes(filter.toLowerCase());
         const matchesStatus = statusMultiFilter.length === 0 || statusMultiFilter.includes(item.status);
-        const matchesAgent = agentFilter.length === 0 || item.crmAgent.some(a => agentFilter.includes(a));
-        const matchesPayment = paymentFilter.length === 0 || paymentFilter.includes(item.paymentMethod);
-        const matchesDate = (!dateRange.from || (item.startDate && item.startDate >= dateRange.from)) &&
-                            (!dateRange.to || (item.startDate && item.startDate <= dateRange.to));
+        const matchesAgent = agentFilter.length === 0 || item.crmAgents.some(a => agentFilter.includes(a));
+        const matchesPayment = paymentFilter.length === 0 || paymentFilter.includes(item.paymentType);
+        const matchesDate = (!dateRange.from || (item.startTime && item.startTime >= dateRange.from)) &&
+                            (!dateRange.to || (item.startTime && item.startTime <= dateRange.to));
         return matchesSearch && matchesStatus && matchesAgent && matchesPayment && matchesDate;
     });
 
-    // Custom multi-select dropdown for agents (with z-30)
-    function AgentsDropdown({ value, onChange, options, compact }) {
+    // Generic MultiSelectDropdown component, similar to AgentsDropdown for status and payment
+    function MultiSelectDropdown({ value, onChange, options, getOptionData, placeholder }) {
         const [open, setOpen] = useState(false);
         const btnRef = useRef();
         const toggle = () => setOpen((v) => !v);
-        const handleOption = (agent) => {
-            if (value.includes(agent)) {
-                onChange(value.filter((a) => a !== agent));
+        const handleOption = (opt) => {
+            if (value.includes(opt)) {
+                onChange(value.filter((a) => a !== opt));
             } else {
-                onChange([...value, agent]);
+                onChange([...value, opt]);
             }
         };
         return (
             <div className="relative">
-                <button type="button" ref={btnRef} className={`w-full border rounded bg-white text-left ${compact ? 'px-1 py-0.5 text-xs h-7' : 'px-2 py-1'} `} onClick={toggle}>
-                    {value.length === 0 ? 'Select agent(s)' : (
+                <button type="button" ref={btnRef} className="w-full border rounded bg-white text-left px-3 py-1 text-sm h-9 flex items-center min-w-fit" onClick={toggle}>
+                    {value.length === 0 ? placeholder : (
                         <div className="flex flex-wrap gap-1">
-                            {value.map(agentName => {
-                                const emp = getEmployeeData(agentName);
+                            {value.map(opt => {
+                                const data = getOptionData(opt);
                                 return (
-                                    <span   key={agentName} className="inline-flex items-center gap-1 px-1 py-0.5 rounded text-xs" 
-                                            style={{ backgroundColor: emp?.color + '20', color: emp?.color, border: `1px solid ${emp?.color}40` }}>
-                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: emp?.color }}></div>
-                                        {agentName}
+                                    <span key={opt} className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs" style={data?.color ? { backgroundColor: data?.bgColor || data?.color + '20', color: data?.textColor || data?.color, border: data?.color ? `1px solid ${data?.color}40` : undefined } : {}}>
+                                        {data?.icon && <span className="text-sm">{data.icon}</span>}
+                                        {data?.label || opt}
                                     </span>
                                 );
                             })}
                         </div>
                     )}
                 </button>
-                <PortalDropdown anchorRef={btnRef} open={open} onClose={() => setOpen(false)} width={compact ? 140 : 200}>
-                    <div className={`z-30 bg-white border rounded shadow w-full max-h-40 overflow-y-auto mt-1 ${compact ? 'text-xs' : ''}`} style={{minWidth: btnRef.current?.offsetWidth}}>
-                        {options.map(agentName => {
-                            const emp = getEmployeeData(agentName);
+                <PortalDropdown anchorRef={btnRef} open={open} onClose={() => setOpen(false)} width={140}>
+                    <div className="z-30 bg-white border rounded-xl shadow-lg w-full max-h-40 overflow-y-auto mt-1 text-xs">
+                        {options.map(opt => {
+                            const data = getOptionData(opt);
                             return (
-                                <label key={agentName} className={`flex items-center px-2 py-1 cursor-pointer hover:bg-gray-100 ${compact ? 'py-0.5' : ''}`}>
+                                <label key={opt} className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-blue-50 focus-within:bg-blue-100 rounded-lg transition-colors whitespace-normal break-words max-w-full border-b border-gray-100 last:border-b-0">
                                     <input
                                         type="checkbox"
-                                        checked={value.includes(agentName)}
-                                        onChange={() => handleOption(agentName)}
-                                        className="mr-2"
+                                        checked={value.includes(opt)}
+                                        onChange={() => handleOption(opt)}
+                                        className="mr-2 accent-blue-500 w-4 h-4"
                                     />
-                                    <div className="flex items-center gap-2 flex-1">
-                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: emp?.color }}></div>
-                                        <div className="flex-1">
-                                            <div className="font-medium">{agentName}</div>
-                                            <div className="text-xs text-gray-500">{emp?.title}</div>
-                                        </div>
-                                        <div className="text-xs text-gray-400">Rank {emp?.rank}</div>
+                                    <div className="flex items-center gap-2">
+                                        {data?.color && <div className="w-3 h-3 rounded-full" style={{ backgroundColor: data?.color }}></div>}
+                                        {data?.icon && <span className="text-sm">{data.icon}</span>}
+                                        <span>{data?.label || opt}</span>
                                     </div>
                                 </label>
                             );
@@ -556,83 +607,15 @@ export default function App() {
         );
     }
 
-    // Compact multi-select dropdown for status/payment
-    function CompactMultiSelect({ value, onChange, options, placeholder, type = 'status' }) {
-        const [open, setOpen] = useState(false);
-        const toggle = () => setOpen((v) => !v);
-        const handleOption = (opt) => {
-            if (value.includes(opt)) {
-                onChange(value.filter((a) => a !== opt));
-            } else {
-                onChange([...value, opt]);
-            }
-        };
-        
-        const getOptionData = (opt) => {
-            if (type === 'status') {
-                return statusOptions.find(s => s.value === opt);
-            } else if (type === 'payment') {
-                return paymentMethods.find(p => p.value === opt);
-            }
-            return null;
-        };
-
-        return (
-            <div className="relative">
-                <button type="button" className="w-full border rounded bg-white text-left px-1 py-0.5 text-xs h-7" onClick={toggle}>
-                    {value.length === 0 ? placeholder : (
-                        <div className="flex flex-wrap gap-1">
-                            {value.map(opt => {
-                                const data = getOptionData(opt);
-                                if (type === 'status') {
-                                    return (
-                                        <span key={opt} className="inline-flex items-center gap-1 px-1 py-0.5 rounded text-xs" 
-                                              style={{ backgroundColor: data?.bgColor, color: data?.textColor }}>
-                                            {data?.label}
-                                        </span>
-                                    );
-                                } else if (type === 'payment') {
-                                    return (
-                                        <span key={opt} className="inline-flex items-center gap-1 px-1 py-0.5 rounded text-xs" 
-                                              style={{ backgroundColor: data?.color + '20', color: data?.color, border: `1px solid ${data?.color}40` }}>
-                                            {data?.icon} {data?.label}
-                                        </span>
-                                    );
-                                }
-                                return opt;
-                            })}
-                        </div>
-                    )}
-                </button>
-                {open && (
-                    <div className="absolute z-30 bg-white border rounded shadow w-full max-h-40 overflow-y-auto mt-1 text-xs">
-                        {options.map(opt => {
-                            const data = getOptionData(opt);
-                            return (
-                                <label key={opt} className="flex items-center px-2 py-0.5 cursor-pointer hover:bg-gray-100">
-                                    <input
-                                        type="checkbox"
-                                        checked={value.includes(opt)}
-                                        onChange={() => handleOption(opt)}
-                                        className="mr-2"
-                                    />
-                                    <div className="flex items-center gap-2">
-                                        {type === 'status' && (
-                                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: data?.color }}></div>
-                                        )}
-                                        {type === 'payment' && (
-                                            <span className="text-sm">{data?.icon}</span>
-                                        )}
-                                        <span>{data?.label || opt}</span>
-                                    </div>
-                                </label>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-        );
-    }
+    const handleOrderValChange = (val) => {
+        // Allow only numbers, comma, dot, apostrophe
+        const filtered = val.replace(/[^0-9,.'']/g, '');
+        setNewRow({ ...newRow, orderVal: filtered });
+    };
+    const handleEditOrderValChange = (id, val) => {
+        const filtered = val.replace(/[^0-9,.'']/g, '');
+        editItem(id, 'orderVal', filtered);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 p-2">
@@ -673,7 +656,7 @@ export default function App() {
                             <div className="text-[10px] text-gray-500 leading-tight">In Progress</div>
                         </Card>
                         <Card className="p-2 flex flex-col items-center min-w-[70px]">
-                            <div className="text-lg font-bold text-purple-600">${filteredSortedItems.reduce((sum, item) => sum + (parseFloat(item.orderValue) || 0), 0).toFixed(2)}</div>
+                            <div className="text-lg font-bold text-purple-600">{filteredSortedItems.reduce((sum, item) => sum + (parseFloat(item.orderVal) || 0), 0).toFixed(2)} SAR</div>
                             <div className="text-[10px] text-gray-500 leading-tight">Total Value</div>
                         </Card>
                     </div>
@@ -681,50 +664,68 @@ export default function App() {
 
                 {/* Filters */}
                 <div className="bg-white rounded-lg shadow-sm p-1">
-                    <div className="flex flex-nowrap gap-1 overflow-x-auto md:overflow-visible md:flex-wrap items-center">
-                        <div className="min-w-[160px] flex-1">
+                    <div className="flex flex-nowrap gap-0.5 overflow-x-auto md:overflow-visible md:flex-wrap items-center text-[11px]">
+                        <div className="min-w-[60px] flex-1">
                             <div className="relative">
                                 <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
                                 <Input 
                                     placeholder="Search..." 
                                     value={filter} 
                                     onChange={(e) => setFilter(e.target.value)}
-                                    className="pl-7 py-1 text-xs h-7 min-w-[120px]"
+                                    className="pl-7 py-0.5 text-xs h-6 min-w-[100px]"
                                 />
                             </div>
                         </div>
-                        <div className="min-w-[110px]">
-                            <CompactMultiSelect
+                        <div className="min-w-fit w-auto">
+                            <MultiSelectDropdown
                                 value={statusMultiFilter}
                                 onChange={setStatusMultiFilter}
                                 options={statusOptions.map(s => s.value)}
+                                getOptionData={opt => statusOptions.find(s => s.value === opt)}
                                 placeholder="Status"
-                                type="status"
                             />
                         </div>
-                        <div className="min-w-[120px]">
-                            <CompactMultiSelect
+                        <div className="min-w-fit w-auto">
+                            <MultiSelectDropdown
                                 value={paymentFilter}
                                 onChange={setPaymentFilter}
                                 options={paymentMethods.map(p => p.value)}
+                                getOptionData={opt => paymentMethods.find(p => p.value === opt)}
                                 placeholder="Payment"
-                                type="payment"
                             />
                         </div>
-                        <div className="min-w-[140px]">
-                            <AgentsDropdown
+                        <div className="min-w-fit w-auto">
+                            <MultiSelectDropdown
                                 value={agentFilter}
                                 onChange={setAgentFilter}
                                 options={agents}
-                                compact
+                                getOptionData={opt => getEmployeeData(opt)}
+                                placeholder="Select agent(s)"
                             />
                         </div>
-                        <div className="flex gap-1 items-center text-xs min-w-[140px]">
+                        <div className="flex gap-1 items-center text-xs min-w-[220px]">
                             <span>From</span>
-                            <input type="date" value={dateRange.from} onChange={e => setDateRange(r => ({ ...r, from: e.target.value }))} className="border rounded px-1 py-0.5 h-7 text-xs" />
+                            <input type="datetime-local" value={dateRange.from} onChange={e => setDateRange(r => ({ ...r, from: e.target.value }))} className="border rounded px-1 py-0.5 h-6 text-xs" />
                             <span>To</span>
-                            <input type="date" value={dateRange.to} onChange={e => setDateRange(r => ({ ...r, to: e.target.value }))} className="border rounded px-1 py-0.5 h-7 text-xs" />
+                            <input type="datetime-local" value={dateRange.to} onChange={e => setDateRange(r => ({ ...r, to: e.target.value }))} className="border rounded px-1 py-0.5 h-6 text-xs" />
                         </div>
+                        <div className="flex-1" />
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="ml-2 px-2 py-1 h-8 text-xs flex items-center gap-1 border-red-200 text-red-600 hover:bg-red-50"
+                            onClick={() => {
+                                setFilter("");
+                                setStatusMultiFilter([]);
+                                setPaymentFilter([]);
+                                setAgentFilter([]);
+                                setDateRange({ from: '', to: '' });
+                            }}
+                            title="Clear all filters"
+                        >
+                            <XCircle className="w-4 h-4 mr-1" />
+                            Clear Filters
+                        </Button>
                     </div>
                 </div>
 
@@ -732,69 +733,79 @@ export default function App() {
                 <div className="bg-white rounded-lg shadow-sm">
                     <div className="overflow-x-auto" style={{ height: tableHeight }}>
                         <div className="min-w-[2200px]">
-                            <table className="w-full min-w-[2200px] text-xs" style={{ tableLayout: 'fixed' }}>
-                                <thead className="bg-gray-50 sticky top-0 z-10">
-                                    <tr>
+                            <table className="w-full min-w-[2200px] text-xs border border-gray-400" style={{ tableLayout: 'fixed' }}>
+                                <thead className="bg-gray-50 sticky top-0 z-10 border-b-2 border-gray-400">
+                                    <tr className="border-b border-gray-400">
                                         {columnOrder.map(column => (
                                             <ColumnHeader key={column} column={column}>
                                                 {
-                                                    column === 'entry' ? '#' :
+                                                    column === 'eventNum' ? '#' :
                                                     column === 'actions' ? 'Actions' :
-                                                    column === 'client' ? 'Client' :
-                                                    column === 'contact' ? 'Contact' :
+                                                    column === 'clientName' ? 'Client' :
+                                                    column === 'phoneNum' ? 'Phone' :
                                                     column === 'city' ? 'City' :
                                                     column === 'country' ? 'Country' :
-                                                    column === 'location' ? 'Location' :
                                                     column === 'mapsLocation' ? 'Maps' :
                                                     column === 'status' ? 'Status' :
-                                                    column === 'orderNumber' ? 'Order #' :
+                                                    column === 'orderNum' ? 'Order #' :
                                                     column === 'order' ? 'Order' :
-                                                    column === 'orderValue' ? 'Value' :
-                                                    column === 'payment' ? 'Payment' :
+                                                    column === 'orderVal' ? 'Value' :
+                                                    column === 'paymentType' ? 'Payment' :
                                                     column === 'deliveryRepresentative' ? 'Del. Rep.' :
-                                                    column === 'agents' ? 'Agents' :
-                                                    column === 'startDate' ? 'Start' :
-                                                    column === 'endDate' ? 'End' :
-                                                    column === 'delivery' ? 'Deliv.' :
-                                                    column === 'chat' ? 'Chat' :
-                                                    column === 'chatOrder' ? 'Chat Ord.' :
+                                                    column === 'crmAgents' ? 'CRM Agents' :
+                                                    column === 'startTime' ? 'Start' :
+                                                    column === 'deliveryTime' ? 'Delivery Time' :
+                                                    column === 'delivered' ? 'Delivered' :
+                                                    column === 'chatLink' ? 'Chat Link' :
+                                                    column === 'crmAgentNotes' ? 'CRM Notes' :
+                                                    column === 'deliveryRepNotes' ? 'Delivery Rep. Notes' :
+                                                    column === 'customerNotes' ? 'Customer Notes' :
                                                     column
                                                 }
                                             </ColumnHeader>
                                         ))}
                                     </tr>
                                 </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="bg-white divide-y divide-gray-300">
                                     {/* Empty row for new entry */}
-                                    <tr className="border-b-2" style={{ backgroundColor: ADD_ROW_COLOR }}>
+                                    <tr className="border-b-2 border-gray-400" style={{ backgroundColor: ADD_ROW_COLOR }}>
                                         {columnOrder.map((column, colIdx) => {
                                             const fieldMap = {
-                                                entry: 'entryNumber',
-                                                client: 'clientName',
-                                                contact: 'phoneNumber',
-                                                agents: 'crmAgent',
-                                                payment: 'paymentMethod',
+                                                eventNum: 'eventNum',
+                                                clientName: 'clientName',
+                                                phoneNum: 'phoneNum',
+                                                city: 'city',
+                                                country: 'country',
+                                                mapsLocation: 'mapsLocation',
+                                                orderNum: 'orderNum',
+                                                order: 'order',
+                                                orderVal: 'orderVal',
+                                                paymentType: 'paymentType',
                                                 deliveryRepresentative: 'deliveryRepresentative',
-                                                delivery: 'delivery',
+                                                delivered: 'delivered',
                                             };
                                             const field = fieldMap[column] || column;
                                             let cell = null;
-                                            if (column === 'entry') {
+                                            if (column === 'eventNum') {
                                                 cell = <span />;
                                             } else if ([
-                                                'client','contact','city','location','mapsLocation','orderNumber','order','orderValue','deliveryRepresentative','chat','chatOrder'
+                                                'clientName','phoneNum','city','country','mapsLocation','orderNum','order','orderVal','deliveryRepresentative','delivered'
                                             ].includes(column)) {
-                                                if (column === 'contact') {
+                                                if (column === 'phoneNum') {
                                                     cell = (
                                                         <Input
                                                             ref={el => inputRefs.current[`new-${column}`] = el}
-                                                            value={newRow.phoneNumber || ''}
+                                                            value={newRow.phoneNum || ''}
                                                             onChange={e => handlePhoneChange(e.target.value)}
                                                             onKeyDown={e => {
                                                                 if (e.key === 'Escape') e.target.blur();
                                                                 if (e.key === 'ArrowDown') focusCell(0, column);
+                                                                if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                    addItem();
+                                                                    setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                                }
                                                             }}
-                                                            className="py-1 px-2 h-7 text-xs"
+                                                            className="py-0 px-1 h-5 text-[11px]"
                                                         />
                                                     );
                                                 } else {
@@ -806,8 +817,12 @@ export default function App() {
                                                             onKeyDown={e => {
                                                                 if (e.key === 'Escape') e.target.blur();
                                                                 if (e.key === 'ArrowDown') focusCell(0, column);
+                                                                if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                    addItem();
+                                                                    setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                                }
                                                             }}
-                                                            className="py-1 px-2 h-7 text-xs"
+                                                            className="py-0 px-1 h-5 text-[11px]"
                                                         />
                                                     );
                                                 }
@@ -820,8 +835,12 @@ export default function App() {
                                                         onKeyDown={e => {
                                                             if (e.key === 'Escape') e.target.blur();
                                                             if (e.key === 'ArrowDown') focusCell(0, column);
+                                                            if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                addItem();
+                                                                setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                            }
                                                         }}
-                                                        className="w-full px-1 py-0.5 h-7 text-xs border rounded"
+                                                        className="w-full px-1 py-0 h-5 text-[11px] border rounded"
                                                     >
                                                         <option value="">Select country</option>
                                                         {countries.map(country => (
@@ -838,63 +857,66 @@ export default function App() {
                                                         onKeyDown={e => {
                                                             if (e.key === 'Escape') e.target.blur();
                                                             if (e.key === 'ArrowDown') focusCell(0, column);
+                                                            if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                addItem();
+                                                                setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                            }
                                                         }}
-                                                        className="w-full px-1 py-0.5 h-7 text-xs border rounded"
+                                                        className="w-full px-1 py-0 h-5 text-[11px] border rounded"
                                                     >
                                                         {statusOptions.map(opt => (
                                                             <option key={opt.value} value={opt.value}>{opt.label}</option>
                                                         ))}
                                                     </select>
                                                 );
-                                            } else if (column === 'agents') {
+                                            } else if (column === 'crmAgents') {
                                                 cell = (
-                                                    <AgentsDropdown
-                                                        value={newRow.crmAgent}
-                                                        onChange={crmAgent => setNewRow({ ...newRow, crmAgent })}
+                                                    <MultiSelectDropdown
+                                                        value={newRow.crmAgents}
+                                                        onChange={crmAgents => setNewRow({ ...newRow, crmAgents })}
                                                         options={agents}
-                                                        compact
+                                                        getOptionData={opt => getEmployeeData(opt)}
+                                                        placeholder="Select CRM Agents"
                                                     />
                                                 );
-                                            } else if (column === 'payment') {
-                                                const paymentData = getPaymentData(newRow.paymentMethod);
+                                            } else if (column === 'paymentType') {
+                                                const paymentData = getPaymentData(newRow.paymentType);
                                                 cell = (
                                                     <div className="flex items-center gap-1">
                                                         <select
                                                             ref={el => inputRefs.current[`new-${column}`] = el}
-                                                            value={newRow.paymentMethod}
-                                                            onChange={e => setNewRow({ ...newRow, paymentMethod: e.target.value })}
+                                                            value={newRow.paymentType}
+                                                            onChange={e => setNewRow({ ...newRow, paymentType: e.target.value })}
                                                             onKeyDown={e => {
                                                                 if (e.key === 'Escape') e.target.blur();
                                                                 if (e.key === 'ArrowDown') focusCell(0, column);
+                                                                if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                    addItem();
+                                                                    setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                                }
                                                             }}
-                                                            className="w-full px-1 py-0.5 h-7 text-xs border rounded"
+                                                            className="w-full px-1 py-0 h-5 text-[11px] border rounded"
                                                             style={paymentData ? { backgroundColor: paymentData.color + '20', color: paymentData.color, border: `1px solid ${paymentData.color}40` } : {}}
                                                         >
                                                             <option value="">Select payment</option>
                                                             {paymentMethods.map(opt => (
-                                                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                                <option key={opt.value} value={opt.value}>
+                                                                    {opt.icon} {opt.label}
+                                                                </option>
                                                             ))}
                                                         </select>
-                                                        
-                                                        {paymentData 
-                                                            && (
-                                                            <span className="inline-flex items-center gap-1 px-1 py-0.5 rounded text-xs" style={{ backgroundColor: paymentData.color + '20', color: paymentData.color, border: `1px solid ${paymentData.color}40` }}>
-                                                                <span>{paymentData.icon}</span>
-                                                            </span>
-                                                            )
-                                                        }
                                                     </div>
                                                 );
-                                            } else if (column === 'delivery') {
+                                            } else if (column === 'delivered') {
                                                 cell = (
                                                     <input
                                                         type="checkbox"
-                                                        checked={!!newRow.delivery}
-                                                        onChange={e => setNewRow({ ...newRow, delivery: e.target.checked })}
+                                                        checked={!!newRow.delivered}
+                                                        onChange={e => setNewRow({ ...newRow, delivered: e.target.checked })}
                                                         className="h-4 w-4"
                                                     />
                                                 );
-                                            } else if (column === 'startDate' || column === 'endDate') {
+                                            } else if (column === 'startTime' || column === 'deliveryTime') {
                                                 cell = (
                                                     <input
                                                         type="datetime-local"
@@ -904,19 +926,82 @@ export default function App() {
                                                         onKeyDown={e => {
                                                             if (e.key === 'Escape') e.target.blur();
                                                             if (e.key === 'ArrowDown') focusCell(0, column);
+                                                            if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                addItem();
+                                                                setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                            }
                                                         }}
                                                         className="w-full px-1 py-0.5 h-7 text-xs border rounded"
                                                     />
                                                 );
                                             } else if (column === 'actions') {
                                                 cell = (
-                                                    <Button size="sm" variant="outline" className="h-7 px-2 text-xs" onClick={addItem}>
+                                                    <Button size="sm" variant="outline" className="h-6 px-1 text-xs ml-1" onClick={addItem} disabled={!newRow.clientName.trim()}>
                                                         <Plus className="w-3 h-3 mr-1" /> Add
                                                     </Button>
                                                 );
-                                            }
+                                            } else if ([
+                                                        'address', 'chatLink'
+                                                    ].includes(column)) {
+                                                        cell = (
+                                                            <Input
+                                                                type={column === 'chatLink' ? 'url' : 'text'}
+                                                                ref={el => inputRefs.current[`new-${column}`] = el}
+                                                                value={newRow[field] || ''}
+                                                                onChange={e => setNewRow({ ...newRow, [field]: e.target.value })}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Escape') e.target.blur();
+                                                                    if (e.key === 'ArrowDown') focusCell(0, column);
+                                                                    if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                        addItem();
+                                                                        setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                                    }
+                                                                }}
+                                                                className="py-0 px-1 h-5 text-[11px]"
+                                                            />
+                                                        );
+                                                    } else if ([
+                                                        'crmAgentNotes', 'deliveryRepNotes', 'customerNotes'
+                                                    ].includes(column)) {
+                                                        cell = (
+                                                            <textarea
+                                                                ref={el => inputRefs.current[`new-${column}`] = el}
+                                                                value={newRow[field] || ''}
+                                                                onChange={e => setNewRow({ ...newRow, [field]: e.target.value })}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Escape') e.target.blur();
+                                                                    if (e.key === 'ArrowDown') focusCell(0, column);
+                                                                    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && newRow.clientName.trim()) {
+                                                                        addItem();
+                                                                        setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                                    }
+                                                                }}
+                                                                className="py-0 px-1 h-5 text-[11px] w-full resize-vertical border rounded"
+                                                                rows={1}
+                                                            />
+                                                        );
+                                                    } else if (column === 'orderVal') {
+                                                        cell = (
+                                                            <Input
+                                                                ref={el => inputRefs.current[`new-orderVal`] = el}
+                                                                value={newRow.orderVal || ''}
+                                                                onChange={e => handleOrderValChange(e.target.value)}
+                                                                inputMode="decimal"
+                                                                pattern="[0-9,.'']*"
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Escape') e.target.blur();
+                                                                    if (e.key === 'ArrowDown') focusCell(0, column);
+                                                                    if (e.key === 'Enter' && newRow.clientName.trim()) {
+                                                                        addItem();
+                                                                        setTimeout(() => focusCell('new', 'clientName'), 0);
+                                                                    }
+                                                                }}
+                                                                className="py-0 px-1 h-5 text-[11px]"
+                                                            />
+                                                        );
+                                                    }
                                             return (
-                                                <td key={column} className="px-1 py-1 text-xs whitespace-nowrap overflow-hidden text-ellipsis"
+                                                <td key={column} className="px-0.5 py-0 text-[11px] whitespace-nowrap overflow-hidden text-ellipsis border-r border-gray-300 border-b border-gray-300"
                                                     style={column === 'country' && newRow.country ? { backgroundColor: countryColors[newRow.country] || '#F3F4F6' } : {}}>
                                                     {cell}
                                                 </td>
@@ -925,36 +1010,41 @@ export default function App() {
                                     </tr>
                                     {/* Editable rows for each item */}
                                     {filteredSortedItems.map((item, rowIdx) => (
-                                        <tr key={item.id} className="hover:bg-gray-50" style={{ backgroundColor: getStatusData(item.status)?.bgColor }}>
+                                        <tr key={item.id} className="hover:bg-gray-50 border-b border-gray-300" style={{ backgroundColor: getStatusData(item.status)?.bgColor }}>
                                             {columnOrder.map((column, colIdx) => {
                                                 const fieldMap = {
-                                                    entry: 'entryNumber',
-                                                    client: 'clientName',
-                                                    contact: 'phoneNumber',
-                                                    agents: 'crmAgent',
-                                                    payment: 'paymentMethod',
+                                                    eventNum: 'eventNum',
+                                                    clientName: 'clientName',
+                                                    phoneNum: 'phoneNum',
+                                                    city: 'city',
+                                                    country: 'country',
+                                                    mapsLocation: 'mapsLocation',
+                                                    orderNum: 'orderNum',
+                                                    order: 'order',
+                                                    orderVal: 'orderVal',
+                                                    paymentType: 'paymentType',
                                                     deliveryRepresentative: 'deliveryRepresentative',
-                                                    delivery: 'delivery',
+                                                    delivered: 'delivered',
                                                 };
                                                 const field = fieldMap[column] || column;
                                                 let cell = null;
-                                                if (column === 'entry') {
-                                                    cell = <span>{item.entryNumber}</span>;
+                                                if (column === 'eventNum') {
+                                                    cell = <span>{item.eventNum}</span>;
                                                 } else if ([
-                                                    'client','contact','city','location','mapsLocation','orderNumber','order','orderValue','deliveryRepresentative','chat','chatOrder'
+                                                    'clientName','phoneNum','city','country','mapsLocation','orderNum','order','orderVal','deliveryRepresentative','delivered'
                                                 ].includes(column)) {
-                                                    if (column === 'contact') {
+                                                    if (column === 'phoneNum') {
                                                         cell = (
                                                             <Input
                                                                 ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
-                                                                value={item.phoneNumber || ''}
+                                                                value={item.phoneNum || ''}
                                                                 onChange={e => handleEditPhoneChange(item.id, e.target.value)}
                                                                 onKeyDown={e => {
                                                                     if (e.key === 'Escape') e.target.blur();
                                                                     if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
                                                                     if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
                                                                 }}
-                                                                className="py-1 px-2 h-7 text-xs"
+                                                                className="py-0 px-1 h-5 text-[11px]"
                                                             />
                                                         );
                                                     } else {
@@ -968,7 +1058,7 @@ export default function App() {
                                                                     if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
                                                                     if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
                                                                 }}
-                                                                className="py-1 px-2 h-7 text-xs"
+                                                                className="py-0 px-1 h-5 text-[11px]"
                                                             />
                                                         );
                                                     }
@@ -983,7 +1073,7 @@ export default function App() {
                                                                 if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
                                                                 if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
                                                             }}
-                                                            className="w-full px-1 py-0.5 h-7 text-xs border rounded"
+                                                            className="w-full px-1 py-0 h-5 text-[11px] border rounded"
                                                         >
                                                             <option value="">Select country</option>
                                                             {countries.map(country => (
@@ -1002,60 +1092,58 @@ export default function App() {
                                                                 if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
                                                                 if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
                                                             }}
-                                                            className="w-full px-1 py-0.5 h-7 text-xs border rounded"
+                                                            className="w-full px-1 py-0 h-5 text-[11px] border rounded"
                                                         >
                                                             {statusOptions.map(opt => (
                                                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
                                                             ))}
                                                         </select>
                                                     );
-                                                } else if (column === 'agents') {
+                                                } else if (column === 'crmAgents') {
                                                     cell = (
-                                                        <AgentsDropdown
-                                                            value={item.crmAgent}
-                                                            onChange={crmAgent => editItem(item.id, 'crmAgent', crmAgent)}
+                                                        <MultiSelectDropdown
+                                                            value={item.crmAgents}
+                                                            onChange={crmAgents => editItem(item.id, 'crmAgents', crmAgents)}
                                                             options={agents}
-                                                            compact
+                                                            getOptionData={opt => getEmployeeData(opt)}
+                                                            placeholder="Select CRM Agents"
                                                         />
                                                     );
-                                                } else if (column === 'payment') {
-                                                    const paymentData = getPaymentData(item.paymentMethod);
+                                                } else if (column === 'paymentType') {
+                                                    const paymentData = getPaymentData(item.paymentType);
                                                     cell = (
                                                         <div className="flex items-center gap-1">
                                                             <select
                                                                 ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
-                                                                value={item.paymentMethod}
-                                                                onChange={e => editItem(item.id, 'paymentMethod', e.target.value)}
+                                                                value={item.paymentType}
+                                                                onChange={e => editItem(item.id, 'paymentType', e.target.value)}
                                                                 onKeyDown={e => {
                                                                     if (e.key === 'Escape') e.target.blur();
                                                                     if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
                                                                     if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
                                                                 }}
-                                                                className="w-full px-1 py-0.5 h-7 text-xs border rounded"
+                                                                className="w-full px-1 py-0 h-5 text-[11px] border rounded"
                                                                 style={paymentData ? { backgroundColor: paymentData.color + '20', color: paymentData.color, border: `1px solid ${paymentData.color}40` } : {}}
                                                             >
                                                                 <option value="">Select payment</option>
                                                                 {paymentMethods.map(opt => (
-                                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                                    <option key={opt.value} value={opt.value}>
+                                                                        {opt.icon} {opt.label}
+                                                                    </option>
                                                                 ))}
                                                             </select>
-                                                            {paymentData && (
-                                                                <span className="inline-flex items-center gap-1 px-1 py-0.5 rounded text-xs" style={{ backgroundColor: paymentData.color + '20', color: paymentData.color, border: `1px solid ${paymentData.color}40` }}>
-                                                                    <span>{paymentData.icon}</span> {paymentData.label}
-                                                                </span>
-                                                            )}
                                                         </div>
                                                     );
-                                                } else if (column === 'delivery') {
+                                                } else if (column === 'delivered') {
                                                     cell = (
                                                         <input
                                                             type="checkbox"
-                                                            checked={!!item.delivery}
-                                                            onChange={e => editItem(item.id, 'delivery', e.target.checked)}
+                                                            checked={!!item.delivered}
+                                                            onChange={e => editItem(item.id, 'delivered', e.target.checked)}
                                                             className="h-4 w-4"
                                                         />
                                                     );
-                                                } else if (column === 'startDate' || column === 'endDate') {
+                                                } else if (column === 'startTime' || column === 'deliveryTime') {
                                                     cell = (
                                                         <input
                                                             type="datetime-local"
@@ -1077,9 +1165,59 @@ export default function App() {
                                                             <Button size="icon" variant="ghost" onClick={() => deleteItem(item.id)}><Trash2 className="w-4 h-4" /></Button>
                                                         </div>
                                                     );
-                                                }
+                                                } else if ([
+                                                            'address', 'chatLink'
+                                                        ].includes(column)) {
+                                                            cell = (
+                                                                <Input
+                                                                    type={column === 'chatLink' ? 'url' : 'text'}
+                                                                    ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
+                                                                    value={item[field] || ''}
+                                                                    onChange={e => editItem(item.id, field, e.target.value)}
+                                                                    onKeyDown={e => {
+                                                                        if (e.key === 'Escape') e.target.blur();
+                                                                        if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
+                                                                        if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
+                                                                    }}
+                                                                    className="py-0 px-1 h-5 text-[11px]"
+                                                                />
+                                                            );
+                                                        } else if ([
+                                                            'crmAgentNotes', 'deliveryRepNotes', 'customerNotes'
+                                                        ].includes(column)) {
+                                                            cell = (
+                                                                <textarea
+                                                                    ref={el => inputRefs.current[`${rowIdx}-${column}`] = el}
+                                                                    value={item[field] || ''}
+                                                                    onChange={e => editItem(item.id, field, e.target.value)}
+                                                                    onKeyDown={e => {
+                                                                        if (e.key === 'Escape') e.target.blur();
+                                                                        if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
+                                                                        if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-${column}` : rowIdx - 1, column);
+                                                                    }}
+                                                                    className="py-0 px-1 h-5 text-[11px] w-full resize-vertical border rounded"
+                                                                    rows={1}
+                                                                />
+                                                            );
+                                                        } else if (column === 'orderVal') {
+                                                            cell = (
+                                                                <Input
+                                                                    ref={el => inputRefs.current[`${rowIdx}-orderVal`] = el}
+                                                                    value={item.orderVal || ''}
+                                                                    onChange={e => handleEditOrderValChange(item.id, e.target.value)}
+                                                                    inputMode="decimal"
+                                                                    pattern="[0-9,.'']*"
+                                                                    onKeyDown={e => {
+                                                                        if (e.key === 'Escape') e.target.blur();
+                                                                        if (e.key === 'ArrowDown') focusCell(rowIdx + 1, column);
+                                                                        if (e.key === 'ArrowUp') focusCell(rowIdx === 0 ? `new-orderVal` : rowIdx - 1, column);
+                                                                    }}
+                                                                    className="py-0 px-1 h-5 text-[11px]"
+                                                                />
+                                                            );
+                                                        }
                                                 return (
-                                                    <td key={column} className="px-1 py-1 text-xs whitespace-nowrap overflow-hidden text-ellipsis"
+                                                    <td key={column} className="px-0.5 py-0 text-[11px] whitespace-nowrap overflow-hidden text-ellipsis border-r border-gray-300 border-b border-gray-300"
                                                         style={column === 'country' && item.country ? { backgroundColor: countryColors[item.country] || '#F3F4F6' } : {}}>
                                                         {cell}
                                                     </td>
@@ -1113,7 +1251,7 @@ export default function App() {
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Phone</label>
-                                        <p className="text-sm text-gray-900">{selectedCustomer.phoneNumber}</p>
+                                        <p className="text-sm text-gray-900">{selectedCustomer.phoneNum}</p>
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">City</label>
@@ -1125,7 +1263,7 @@ export default function App() {
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Location</label>
-                                        <p className="text-sm text-gray-900">{selectedCustomer.location}</p>
+                                        <p className="text-sm text-gray-900">{selectedCustomer.mapsLocation}</p>
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Status</label>
@@ -1143,12 +1281,12 @@ export default function App() {
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Order Value</label>
-                                        <p className="text-sm text-gray-900">${parseFloat(selectedCustomer.orderValue || 0).toFixed(2)}</p>
+                                        <p className="text-sm text-gray-900">{parseFloat(selectedCustomer.orderVal || 0).toFixed(2)} SAR</p>
                                     </div>
                                     <div className="md:col-span-2">
                                         <label className="text-sm font-medium text-gray-500">CRM Agents</label>
                                         <div className="flex flex-wrap gap-1 mt-1">
-                                            {selectedCustomer.crmAgent.map(agentName => {
+                                            {selectedCustomer.crmAgents.map(agentName => {
                                                 const emp = getEmployeeData(agentName);
                                                 return (
                                                     <div key={agentName} className="inline-flex items-center gap-2 px-2 py-1 rounded text-xs" 
@@ -1166,11 +1304,11 @@ export default function App() {
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Payment Method</label>
                                         <div className="flex items-center gap-2 mt-1">
-                                            {selectedCustomer.paymentMethod ? (
+                                            {selectedCustomer.paymentType ? (
                                                 <div className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs" 
-                                                     style={{ backgroundColor: getPaymentData(selectedCustomer.paymentMethod)?.color + '20', color: getPaymentData(selectedCustomer.paymentMethod)?.color, border: `1px solid ${getPaymentData(selectedCustomer.paymentMethod)?.color}40` }}>
-                                                    <span>{getPaymentData(selectedCustomer.paymentMethod)?.icon}</span>
-                                                    <span>{getPaymentData(selectedCustomer.paymentMethod)?.label}</span>
+                                                     style={{ backgroundColor: getPaymentData(selectedCustomer.paymentType)?.color + '20', color: getPaymentData(selectedCustomer.paymentType)?.color, border: `1px solid ${getPaymentData(selectedCustomer.paymentType)?.color}40` }}>
+                                                    <span>{getPaymentData(selectedCustomer.paymentType)?.icon}</span>
+                                                    <span>{getPaymentData(selectedCustomer.paymentType)?.label}</span>
                                                 </div>
                                             ) : (
                                                 <span className="text-sm text-gray-500">Not specified</span>
